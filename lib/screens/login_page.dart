@@ -4,6 +4,7 @@ import 'package:chat_app/components/custom_button.dart';
 import 'package:chat_app/components/custom_text_form_field.dart';
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/helper/show_snack_bar.dart';
+import 'package:chat_app/screens/chat_page.dart';
 import 'package:chat_app/screens/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 75,
                 ),
                 Image.asset(
-                  "assets/images/scholar.png",
+                  kLogo,
                   height: 100,
                 ),
                 Container(
@@ -130,13 +131,15 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signInAndUpdateUI(BuildContext context) async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       await signInUser(context);
       setState(() {
         isLoading = false;
       });
       if (context.mounted) {
-        showSnackBar(context,
-            message: "User successfully Logged in", color: Colors.green);
+        Navigator.pushNamed(context, ChatPage.id);
       }
     } on FirebaseAuthException catch (e) {
       loginErrorClassification(e);
