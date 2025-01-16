@@ -74,9 +74,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Inter
+    - family: Pacifico
       fonts:
-        - asset: assets/fonts/Inter-VariableFont_slnt,wght.ttf
+        - asset: assets/fonts/Pacifico-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
