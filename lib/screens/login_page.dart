@@ -147,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
       log(e.toString());
     } finally {
       setState(() {
-        isLoading = false; // Ensure isLoading is reset even on errors
+        isLoading = false;
       });
     }
   }
