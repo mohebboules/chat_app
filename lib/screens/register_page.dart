@@ -83,6 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     password = data;
                   },
                   hintText: 'Password',
+                  obsecureText: true,
                 ),
                 const SizedBox(
                   height: 20,

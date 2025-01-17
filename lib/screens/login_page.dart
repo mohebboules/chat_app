@@ -79,6 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 CustomTextFormField(
                   hintText: 'Password',
+                  obsecureText: true,
                   onChanged: (value) {
                     password = value;
                   },
@@ -139,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
         isLoading = false;
       });
       if (context.mounted) {
-        Navigator.pushNamed(context, ChatPage.id);
+        Navigator.pushNamed(context, ChatPage.id, arguments: email);
       }
     } on FirebaseAuthException catch (e) {
       loginErrorClassification(e);
