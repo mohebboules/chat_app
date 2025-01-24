@@ -1,5 +1,5 @@
+import 'package:chat_app/Cubits/auth_cubit/auth_cubit.dart';
 import 'package:chat_app/Cubits/chat_cubit/chat_cubit.dart';
-import 'package:chat_app/Cubits/login_cubit/login_cubit.dart';
 import 'package:chat_app/components/custom_button.dart';
 import 'package:chat_app/components/custom_text_form_field.dart';
 import 'package:chat_app/constants.dart';
@@ -18,9 +18,11 @@ class LoginPage extends StatelessWidget {
   String? email;
   String? password;
 
+  LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginCubit, LoginState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is LoginLoading) {
           isLoading = true;
@@ -96,7 +98,7 @@ class LoginPage extends StatelessWidget {
                     buttonText: 'Sign In',
                     onTap: () async {
                       if (formKey.currentState!.validate()) {
-                        BlocProvider.of<LoginCubit>(context).signInUser(
+                        BlocProvider.of<AuthCubit>(context).signInUser(
                           email: email!,
                           password: password!,
                         );
