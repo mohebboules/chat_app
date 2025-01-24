@@ -2,37 +2,47 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+part 'auth_event.dart';
 part 'auth_state.dart';
 
-class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(AuthInitial());
-  Future<void> signInUser({
-    required String email,
-    required String password,
-  }) async {
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  String? email;
+  String? password;
+  bool isLoading = false;
+  AuthBloc() : super(AuthInitial()) {
+    on<AuthEvent>((event, emit) async {
+      switch (event) {
+        case LoginEvent():
+          await loginEventMethod(event, emit);
+        case RegisterEvent():
+          await registerEventMethod(emit, event);
+      }
+    });
+  }
+
+  Future<void> registerEventMethod(
+      Emitter<AuthState> emit, RegisterEvent event) async {
+    emit(RegisterLoading());
+    try {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email!, password: password!);
+      emit(RegisterSuccess());
+    } on FirebaseAuthException catch (e) {
+      emit(RegisterFailure(errorMessage: _registerErrorClassification(e)));
+    }
+  }
+
+  Future<void> loginEventMethod(
+      LoginEvent event, Emitter<AuthState> emit) async {
     emit(LoginLoading());
     try {
       await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+          .signInWithEmailAndPassword(email: email!, password: password!);
       emit(LoginSuccess());
     } on FirebaseAuthException catch (e) {
       emit(LoginFailure(message: _loginErrorClassification(e)));
     } catch (e) {
       emit(LoginFailure(message: 'Something went wrong'));
-    }
-  }
-
-  Future<void> registerUser({
-    required String email,
-    required String password,
-  }) async {
-    emit(RegisterLoading());
-    try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      emit(RegisterSuccess());
-    } on FirebaseAuthException catch (e) {
-      emit(RegisterFailure(errorMessage: _registerErrorClassification(e)));
     }
   }
 

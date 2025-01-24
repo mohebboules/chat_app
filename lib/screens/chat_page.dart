@@ -13,11 +13,13 @@ class ChatPage extends StatelessWidget {
 
   final TextEditingController textEditingController = TextEditingController();
   final ScrollController scrollController = ScrollController();
-  List<MessageModel> messagesList = [];
 
   final String email = FirebaseAuth.instance.currentUser!.email!;
   @override
   Widget build(BuildContext context) {
+    List<MessageModel> messagesList =
+        BlocProvider.of<ChatCubit>(context).messagesList;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,

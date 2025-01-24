@@ -1,4 +1,4 @@
-import 'package:chat_app/Cubits/auth_cubit/auth_cubit.dart';
+import 'package:chat_app/Blocs/auth_bloc/auth_bloc.dart';
 import 'package:chat_app/Cubits/chat_cubit/chat_cubit.dart';
 import 'package:chat_app/components/custom_button.dart';
 import 'package:chat_app/components/custom_text_form_field.dart';
@@ -12,31 +12,28 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginPage extends StatelessWidget {
   static String id = "LoginPage";
-  bool isLoading = false;
 
   final GlobalKey<FormState> formKey = GlobalKey();
-  String? email;
-  String? password;
 
   LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is LoginLoading) {
-          isLoading = true;
+          BlocProvider.of<AuthBloc>(context).isLoading = true;
         } else if (state is LoginSuccess) {
           BlocProvider.of<ChatCubit>(context).getMessages();
           Navigator.pushNamed(context, ChatPage.id);
-          isLoading = false;
+          BlocProvider.of<AuthBloc>(context).isLoading = false;
         } else if (state is LoginFailure) {
           showSnackBar(context, message: state.message);
-          isLoading = false;
+          BlocProvider.of<AuthBloc>(context).isLoading = false;
         }
       },
       builder: (context, state) => ModalProgressHUD(
-        inAsyncCall: isLoading,
+        inAsyncCall: BlocProvider.of<AuthBloc>(context).isLoading,
         child: Scaffold(
           backgroundColor: kPrimaryColor,
           body: Padding(
@@ -78,7 +75,7 @@ class LoginPage extends StatelessWidget {
                   CustomTextFormField(
                     hintText: 'Email',
                     onChanged: (value) {
-                      email = value;
+                      BlocProvider.of<AuthBloc>(context).email = value;
                     },
                   ),
                   const SizedBox(
@@ -88,7 +85,7 @@ class LoginPage extends StatelessWidget {
                     hintText: 'Password',
                     obsecureText: true,
                     onChanged: (value) {
-                      password = value;
+                      BlocProvider.of<AuthBloc>(context).password = value;
                     },
                   ),
                   const SizedBox(
@@ -98,10 +95,7 @@ class LoginPage extends StatelessWidget {
                     buttonText: 'Sign In',
                     onTap: () async {
                       if (formKey.currentState!.validate()) {
-                        BlocProvider.of<AuthCubit>(context).signInUser(
-                          email: email!,
-                          password: password!,
-                        );
+                        BlocProvider.of<AuthBloc>(context).add(LoginEvent());
                       } else {}
                     },
                   ),
